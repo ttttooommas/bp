@@ -642,7 +642,8 @@ server <- function(input, output) {
       vecT <- c(1:length(vecP))
       par <- setParams(vecP)
       data = data.frame(vecP=vecP,vecT=vecT)
-      optimized <- optimx(par=par,func,data=data,method="Nelder-Mead")
+      #optimized <- optimx(par=par,func,data=data,method="Nelder-Mead")
+      optimized <- optimx(par=par,func,data=data,method="L-BFGS-B") #L-BFGS-B IDEAL
       
       print(optimized)
       
@@ -682,7 +683,8 @@ server <- function(input, output) {
     vecT <- c(1:length(vecP))
     par <- setParams(vecP)
     data = data.frame(vecP=vecP,vecT=vecT)
-    optimized <- optimx(par=par,func,data=data,method="Nelder-Mead")
+    #optimized <- optimx(par=par,func,data=data,method="Nelder-Mead")
+    optimized <- optimx(par=par,func,data=data,method="L-BFGS-B") #L-BFGS-B IDEAL
     #data obdobi pro graf vyvoje
     y2 <- vector()
     y2 <- optimized[1,1]*exp(optimized[1,2]*vecT)+optimized[1,3]
@@ -691,25 +693,28 @@ server <- function(input, output) {
   }
   setParams <- function(vector){
     par <- vector()
-    #pokud bude rostouci
-    if(vector[1]>vector[length(vector)]){
-      if(vector[round(length(vector)/2)] < (vector[1]+vector[length(vector)])/2){
-        par[2] = -1 #C
-        par[1] = 1 #K
-      }else{
-        par[2] = 1 #C
-        par[1] = -1 #K
-      }
-    }else{
-      if(vector[round(length(vector)/2)] < (vector[1]+vector[length(vector)])/2){
-        par[2] = 1 #C
-        par[1] = 1 #K
-      }else{
-        par[2] = -1 #C
-        par[1] = -1 #K
-      }
-      
-    }
+    # POCATECNI PARAMETRY PUVODNI VYHODNOCOVANI TVARU USECKY
+    # #pokud bude rostouci
+    # if(vector[1]>vector[length(vector)]){
+    #   if(vector[round(length(vector)/2)] < (vector[1]+vector[length(vector)])/2){
+    #     par[2] = 0 #C bylo -1
+    #     par[1] = 0 #K bylo 1
+    #   }else{
+    #     par[2] = 0 #C bylo 1
+    #     par[1] = 0 #K bylo -1
+    #   }
+    # }else{
+    #   if(vector[round(length(vector)/2)] < (vector[1]+vector[length(vector)])/2){
+    #     par[2] = 0 #C bylo 1
+    #     par[1] = 0 #K bylo 1
+    #   }else{
+    #     par[2] = 0 #C bylo -1 bylo -1
+    #     par[1] = 0 #K bylo -1 bylo -1
+    #   }
+    #   
+    # }
+    par[1] = 0
+    par[2] = 0
     par[3] = vector[length(vector)] #pLim 
     return(par)
   }
